@@ -15,7 +15,7 @@
             android:src="@drawable/ic_no_album"/>
     <TextView
             android:id="@+id/album_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingBottom="5dp"
             android:textSize="@dimen/font_size"

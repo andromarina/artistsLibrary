@@ -10,31 +10,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.androidquery.util.AQUtility;
 import com.example.ArtistsLibrary.model.Artist;
-import com.example.ArtistsLibrary.model.Repository;
-import org.json.simple.JSONObject;
-
+import com.example.ArtistsLibrary.model.RepositoryUpdateListener;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-public class ArtistsActivity extends Activity {
+public class ArtistsActivity extends Activity implements RepositoryUpdateListener {
     /**
      * Called when the activity is first created.
      */
-    private final String LOG_TAG = this.getClass().getSimpleName();
+    private final String LOG_TAG = "ArtistsActivity";
 
     private ListView artistsList;
     private TextView errorMessage;
-    private final String url = "https://www.dropbox.com/s/yzrp4huvmt3jkv9/data.json?dl=1";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artists_activity);
         findViews();
-        if(ArtistsLibraryApp.getRepository() == null) {
-            createRepository();
-        }
         prepareArtistsList(ArtistsLibraryApp.getRepository().getArtistsList());
+        ArtistsLibraryApp.getRepository().subscribeForUpdates(this);
     }
 
     @Override
@@ -43,20 +37,6 @@ public class ArtistsActivity extends Activity {
         long triggerSize = 3000000; //starts cleaning when cache size is larger than 3M
         long targetSize = 2000000;      //remove the least recently used files until cache size is less than 2M
         AQUtility.cleanCacheAsync(this, triggerSize, targetSize);
-    }
-
-    private void createRepository()
-    {
-        AsyncTaskParseJson backgroundTask = new AsyncTaskParseJson();
-        try {
-            JSONObject result = backgroundTask.execute(url).get();
-            Repository repository = new Repository(result);
-            ArtistsLibraryApp.setRepository(repository);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     private void findViews()
@@ -73,6 +53,7 @@ public class ArtistsActivity extends Activity {
             return;
         }
 
+        this.errorMessage.setVisibility(View.GONE);
         ArtistsListAdapter adapter = new ArtistsListAdapter(this, R.layout.artist_list_item, artists);
         this.artistsList.setAdapter(adapter);
 
@@ -91,4 +72,8 @@ public class ArtistsActivity extends Activity {
         startActivity(intent);
     }
 
+    @Override
+    public void onRepositoryUpdate() {
+        prepareArtistsList(ArtistsLibraryApp.getRepository().getArtistsList());
+    }
 }
