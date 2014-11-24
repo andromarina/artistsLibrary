@@ -43,6 +43,8 @@ public class Repository {
 
     public void loadInBackground()
     {
+        this.artists = new ArrayList<Artist>();
+        this.albums = new ArrayList<Album>();
         Repository.AsyncTaskParseJSON backgroundTask = new Repository.AsyncTaskParseJSON();
         backgroundTask.execute(url);
     }

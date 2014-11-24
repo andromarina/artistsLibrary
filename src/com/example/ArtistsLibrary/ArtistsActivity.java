@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,6 +25,13 @@ public class ArtistsActivity extends Activity implements RepositoryUpdateListene
 
     private ListView artistsList;
     private ProgressDialog progressDialog;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.artists_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,5 +93,17 @@ public class ArtistsActivity extends Activity implements RepositoryUpdateListene
             progressDialog.dismiss();
         }
         prepareArtistsList(ArtistsLibraryApp.getRepository().getArtistsList());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.refresh_button:
+                startProgressDialog();
+                ArtistsLibraryApp.getRepository().loadInBackground();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
