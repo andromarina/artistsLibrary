@@ -47,7 +47,7 @@ public class MyJSONParser {
     }
 
     public static JSONObject getJSONObject(String url)
-            throws ClientProtocolException, IOException, JSONException {
+            throws IOException, JSONException {
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpUriRequest req = new HttpGet(url);

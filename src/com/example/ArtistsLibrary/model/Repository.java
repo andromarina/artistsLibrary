@@ -5,7 +5,6 @@ package com.example.ArtistsLibrary.model;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.example.ArtistsLibrary.utils.MyJSONParser;
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,10 +23,18 @@ public class Repository {
     private ArrayList<Artist> artists = new ArrayList<Artist>();
     private ArrayList<Album> albums = new ArrayList<Album>();
     private RepositoryUpdateListener listener;
+    private ExceptionHandler exceptionHandler;
+    public enum Status {
+        UNDEFINED,
+        FAILED,
+        LOADED
+    }
+    private Status status;
 
-
-    public Repository(String url){
+    public Repository(String url, ExceptionHandler exceptionHandler){
          this.url = url;
+         this.exceptionHandler = exceptionHandler;
+         this.status = Status.UNDEFINED;
     }
 
     public void subscribeForUpdates(RepositoryUpdateListener listener) {
@@ -70,9 +77,23 @@ public class Repository {
         return result;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     private void parseArtistsList(JSONObject jsonObject) {
+        if(jsonObject == null) {
+            Log.w(LOG_TAG, "JSON is null");
+            return;
+        }
         TreeSet set = new TreeSet();
         JSONArray artistsJSON = (JSONArray) jsonObject.get("artists");
+
+        if(artistsJSON == null) {
+            Log.w(LOG_TAG, "artistsJSON is null");
+            return;
+        }
+
         for(int i = 0; i < artistsJSON.size(); ++i)
         {
             JSONObject artistJSON = (JSONObject) artistsJSON.get(i);
@@ -92,7 +113,15 @@ public class Repository {
     }
 
     private void parseAlbums(JSONObject jsonObject) {
+        if(jsonObject == null) {
+            Log.w(LOG_TAG, "JSON is null");
+            return;
+        }
         JSONArray albumsJson = (JSONArray) jsonObject.get("albums");
+        if(albumsJson == null) {
+            Log.w(LOG_TAG, "albumsJSON is null");
+            return;
+        }
         for(int i = 0; i < albumsJson.size(); ++i){
             JSONObject albumJSON = (JSONObject) albumsJson.get(i);
             long albumId = (Long) albumJSON.get("id");
@@ -116,16 +145,19 @@ public class Repository {
     }
 
     private class AsyncTaskParseJSON extends AsyncTask<String, Void, JSONObject> {
+        private Exception ex;
+
         @Override
         protected JSONObject doInBackground(String... urlStrs) {
             JSONObject jsonObjResult = null;
             try {
                 jsonObjResult = MyJSONParser.getJSONObject(urlStrs[0]);
-            } catch (ClientProtocolException e) {
+            }
+            catch (JSONException e) {
+                ex = e;
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+                ex = e;
                 e.printStackTrace();
             }
             return jsonObjResult;
@@ -134,7 +166,13 @@ public class Repository {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            downloadFinished(jsonObject);
+            status = Repository.Status.LOADED;
+            if(ex != null) {
+                status = Repository.Status.FAILED;
+                exceptionHandler.onException(ex);
+            } //else {
+                downloadFinished(jsonObject);
+            //}
         }
     }
 }

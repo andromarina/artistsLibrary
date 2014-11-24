@@ -53,6 +53,8 @@ public class ArtistDetailsActivity extends Activity {
     }
 
     private void setValues(){
+        getActionBar().setDisplayShowTitleEnabled(true);
+        getActionBar().setTitle(this.artist.getName());
         setDescription();
         setGenre();
         setArtistPicture();
