@@ -1,11 +1,11 @@
 package com.example.ArtistsLibrary;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.ImageOptions;
@@ -44,7 +44,10 @@ public class AlbumsListAdapter extends ArrayAdapter<Album> {
         options.ratio = 1.0f;
 
         if(!album.getPictureURL().isEmpty()) {
+            Log.d(LOG_TAG, "Album picture URL: " + album.getPictureURL());
+
             aq.id(R.id.album_picture).image(album.getPictureURL(), options);
+
         }
         return item;
     }

@@ -56,7 +56,9 @@ public class Repository {
 
     public Artist getArtistById(int artistId)
     {
+        Log.d(LOG_TAG, "Artists array count: " + artists.size());
         for(Artist artist : artists){
+
             if(artist.getId() == artistId)
             {
                 return artist;

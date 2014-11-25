@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:padding="10dp">
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="300px"
+                android:id="@+id/artist_picture_big"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_no_artist_big"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/genres_layout">
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/genre"
+            android:textStyle="bold"
+            android:textSize="@dimen/labels_size"
+            android:layout_weight="1" android:textColor="#f80"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/genre"
+                    android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/description_layout"
+                >
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/description"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/labels_size"
+                    android:maxLines="3" android:textColor="#f80" android:layout_weight="25"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/description" android:maxLines="3"/>
+            <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/more" android:src="@android:drawable/ic_menu_more"
+                    android:clickable="false" android:layout_weight="1" android:layout_gravity="right"/>
+        </LinearLayout>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/albums"
+                android:textSize="@dimen/labels_size"
+                android:textStyle="bold" android:id="@+id/albums_label" android:textColor="#f80"/>
+        <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/albums_list"
+                android:drawSelectorOnTop="false"
+                android:clickable="false"
+                android:longClickable="false"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
+                android:listSelector="@drawable/list_selector"/>
+
+
+    </LinearLayout>
+</ScrollView>
+
+
+
+
+
